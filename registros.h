@@ -37,30 +37,26 @@ ListaRegistros *criaListaRegistros(ListaRegistros *l)
 	return(NULL);
 }
 
-void *setRegistros(Hash tab, int id, char nome[tamNome], char endereco[tamEnd], char cidade[tamCid], char pais[tamPais], char telefone[tamTelef])
+void setRegistros(Hash tab, int id, char nome[tamNome], char endereco[tamEnd], char cidade[tamCid], char pais[tamPais], char telefone[tamTelef])
 {
-	printf("id: %d chegou em setRegistros\n", id);
 	int h = hash(id);
+	ListaRegistros *novo = (ListaRegistros*) malloc(sizeof(ListaRegistros));
+	novo = tab[h];
+	
 	if (tab[h] != NULL)
 	{
-		printf("id: %d vai em tab[%d] e a tab nao eh NULL\n", id, hash(id));
-		if (tab[h]->inicio->proximo != NULL)
+		while (novo->proximo != NULL)
 		{
-			printf("procurando proximo NULL na lista da tab[%d]\n", h);
-			tab[h]=tab[h]->inicio->proximo;
-			printf("tab[%d]->proximo->id=%d\n", h, tab[h]->proximo->id);
+			novo=novo->proximo;
 		}
 
-		tab[h]->proximo = (ListaRegistros*) malloc(sizeof(ListaRegistros));
-		tab[h]->proximo->id=id;
-		printf("tab[%d]->id:%d->proximo->id:%d\n", h, tab[h]->id, tab[h]->proximo->id);
-		strcpy(tab[h]->proximo->nome,nome);
-		strcpy(tab[h]->proximo->endereco,endereco);
-		strcpy(tab[h]->proximo->cidade,cidade);
-		strcpy(tab[h]->proximo->pais,pais);
-		strcpy(tab[h]->proximo->telefone,telefone);
-		tab[h]->proximo->proximo = (ListaRegistros*) malloc(sizeof(ListaRegistros));
-		printf("tab[%d] id: %d encadeado na lista com sucesso\n", h, tab[h]->proximo->id);
+		novo->proximo = (ListaRegistros*) malloc(sizeof(ListaRegistros));
+		novo->proximo->id=id;
+		strcpy(novo->proximo->nome,nome);
+		strcpy(novo->proximo->endereco,endereco);
+		strcpy(novo->proximo->cidade,cidade);
+		strcpy(novo->proximo->pais,pais);
+		strcpy(novo->proximo->telefone,telefone);
 	}
 
 	if (tab[h]==NULL)
@@ -73,9 +69,7 @@ void *setRegistros(Hash tab, int id, char nome[tamNome], char endereco[tamEnd], 
 		strcpy(tab[h]->cidade,cidade);
 		strcpy(tab[h]->pais,pais);
 		strcpy(tab[h]->telefone,telefone);
-		tab[h]->inicio=tab[h];
 		tab[h]->proximo=NULL;
-		printf("tab[%d] id: %d inserido como indice no array\n", h, tab[h]->id);
 	}
 }
 
@@ -101,47 +95,53 @@ void carregaRegistros(Hash tab)
 
 void view(Hash tab)
 {
+	ListaRegistros *novo = (ListaRegistros*) malloc(sizeof(ListaRegistros));
 	int i=0;
 	for(i = 0; i < N; i++)
 	{
-		if (tab[i] != NULL)
+		novo=tab[i];
+		if (novo != NULL)
 		{
-			while (tab[i]->proximo != NULL)
+			while (novo->proximo != NULL)
 			{
-				printf("Indice: %d - Id: %d - Nome: %s - Endereco: %s - Cidade: %s - Pais: %s - Telefone: %s\n", i, tab[i]->id, tab[i]->nome, tab[i]->endereco, tab[i]->cidade, tab[i]->pais, tab[i]->telefone);				
-				tab[i]=tab[i]->proximo;
+				printf("Indice: %d - Id: %d - Nome: %s - Endereco: %s - Cidade: %s - Pais: %s - Telefone: %s\n", i, novo->id, novo->nome, novo->endereco, novo->cidade, novo->pais, novo->telefone);
+				novo=novo->proximo;
 			}
 		}
-		if(tab[i]!=NULL)
+		if(novo!=NULL)
 		{
-			printf("Indice: %d - Id: %d - Nome: %s - Endereco: %s - Cidade: %s - Pais: %s - Telefone: %s\n", i, tab[i]->id, tab[i]->nome, tab[i]->endereco, tab[i]->cidade, tab[i]->pais, tab[i]->telefone);
-		}	
+			printf("Indice: %d - Id: %d - Nome: %s - Endereco: %s - Cidade: %s - Pais: %s - Telefone: %s\n", i, novo->id, novo->nome, novo->endereco, novo->cidade, novo->pais, novo->telefone);
+		}
 	}
 }
 
 void busca(Hash tab, int id)
 {
-	int contador = 1;
+	ListaRegistros *novo = (ListaRegistros*) malloc(sizeof(ListaRegistros));
+
+	int contador = 0;
 	int h = hash(id);
-	if(tab[h]->id != id)
+	novo=tab[h];
+
+	if (novo != NULL)
 	{
-		printf("tab[%d]->id=%d nao eh igual o id informado: %d\n", h, tab[h]->id, id);
-		while(tab[h]->id != id)
+		while (novo->proximo != NULL)
 		{
-			tab[h]=tab[h]->proximo;
 			contador++;
-			printf("proxima posicao = tab[%d]->id %d\n", h, tab[h]->id);
-			if(tab[h]->proximo == NULL && tab[h]->id != id)
+			if(novo->id==id)
 			{
-				printf("Elemento nao localizado\n");
-				printf("Quantidade de acessos: %d\n", contador);	
 				break;
 			}
+			novo=novo->proximo;
 		}
-		if(tab[h]->id==id)
+		if (novo->id==id)
 		{
-			printf("Indice: %d - Id: %d - Nome: %s - Endereco: %s - Cidade: %s - Pais: %s - Telefone: %s\n", h, tab[h]->id, tab[h]->nome, tab[h]->endereco, tab[h]->cidade, tab[h]->pais, tab[h]->telefone);
-			printf("Quantidade de acessos: %d\n", contador);
+			printf("Indice: %d - Id: %d - Nome: %s - Endereco: %s - Cidade: %s - Pais: %s - Telefone: %s\n", h, novo->id, novo->nome, novo->endereco, novo->cidade, novo->pais, novo->telefone);
+			printf("Quantidade de acessos para localizar o elemento: %d\n", contador);	
 		}
+
+		if(novo->id!=id) printf("Elemento nao localizado!\n");
 	}
+
+	else printf("Ocorreu um erro!\n");
 }
