@@ -40,7 +40,7 @@ ListaRegistros *criaListaRegistros(ListaRegistros *l)
 void setRegistros(Hash tab, int id, char nome[tamNome], char endereco[tamEnd], char cidade[tamCid], char pais[tamPais], char telefone[tamTelef])
 {
 	int h = hash(id);
-	ListaRegistros *novo = (ListaRegistros*) malloc(sizeof(ListaRegistros));
+	ListaRegistros *novo;
 	novo = tab[h];
 	
 	if (tab[h] != NULL)
@@ -57,6 +57,7 @@ void setRegistros(Hash tab, int id, char nome[tamNome], char endereco[tamEnd], c
 		strcpy(novo->proximo->cidade,cidade);
 		strcpy(novo->proximo->pais,pais);
 		strcpy(novo->proximo->telefone,telefone);
+		novo->proximo->proximo = NULL;
 	}
 
 	if (tab[h]==NULL)
@@ -117,31 +118,21 @@ void view(Hash tab)
 
 void busca(Hash tab, int id)
 {
-	ListaRegistros *novo = (ListaRegistros*) malloc(sizeof(ListaRegistros));
+	ListaRegistros *novo;
 
 	int contador = 0;
 	int h = hash(id);
 	novo=tab[h];
-
-	if (novo != NULL)
+	
+	for(novo = tab[h]; novo != NULL; novo = novo->proximo)
 	{
-		while (novo->proximo != NULL)
-		{
-			contador++;
-			if(novo->id==id)
-			{
-				break;
-			}
-			novo=novo->proximo;
-		}
-		if (novo->id==id)
+		contador++;
+		if(novo->id == id)
 		{
 			printf("Indice: %d - Id: %d - Nome: %s - Endereco: %s - Cidade: %s - Pais: %s - Telefone: %s\n", h, novo->id, novo->nome, novo->endereco, novo->cidade, novo->pais, novo->telefone);
 			printf("Quantidade de acessos para localizar o elemento: %d\n", contador);	
+			return;
 		}
-
-		if(novo->id!=id) printf("Elemento nao localizado!\n");
 	}
-
-	else printf("Ocorreu um erro!\n");
+	printf("Elemento nao localizado!\n");
 }

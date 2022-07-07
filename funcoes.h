@@ -17,9 +17,7 @@ int fMenu()
 
 "-----------------------------------------\n"
 
-"\n\n-----[1] Listar todos os registros"
-"\n"
-"-----[2] Pesquisar registro"
+"\n\n-----[1] Pesquisar registro"
 "\n"
 "-----[0] Sair\n"
 "\n"

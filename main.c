@@ -15,11 +15,11 @@ int main(int argc, char *argv[])
 		system("pause");
 		system("cls");
 		fMenu();
-		if(menu==1)
+		if(menu==9)
 		{
 			view(dados);
 		}
-		if(menu==2)
+		if(menu==1)
 		{
 			busca(dados, dadosBusca());
 		}
